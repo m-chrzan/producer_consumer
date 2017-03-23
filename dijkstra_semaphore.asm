@@ -11,7 +11,8 @@ section .text
 spin_lock:
   lock inc dword [edi]
 proberen:
-  cmp dword [edi], 0   ; check if semaphore > 0
+  mov eax, [edi]
+  test eax, eax        ; check if semaphore > 0
   jle proberen         ; if not, spinlock
   mov eax, -1
   lock xadd [edi], eax ; try decreasing the semaphore
