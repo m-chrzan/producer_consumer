@@ -1,5 +1,11 @@
 global init
+global producer
+
 extern malloc
+
+extern produce
+extern proberen
+extern verhogen
 
 section .bss
 buffer: resb 8
@@ -60,3 +66,43 @@ zero:
 calloc_error:
   mov rax, -3
   jmp finish_init
+
+;-------------------------------------------------------------------------------
+; producer -- procedure to be executed by the producer thread
+;  CLOBBERED: RAX, RCX, RDX
+;             All other registers preserved
+producer:
+  push rdi
+producer_start:
+  ; producer(&producers_portion)
+  mov rdi, producers_portion
+  call produce
+
+  cmp rax, 0                         ; check if 0 was returned
+  je finish_producer                 ; if so, exit the procedure
+
+  ; P(producer_sem)
+  mov edi, producer_sem
+  call proberen
+
+  ; buffer[produce_here] = producers_portion
+  mov rax, [buffer]            ; get pointer to the beginning of the buffer
+  add rax, [produce_here]      ; offset by produce_here
+  mov rcx, [producers_portion] ; get value of producers_portion
+  mov [rax], rcx               ; store value in buffer
+
+  ; V(consumer_sem)
+  mov edi, consumer_sem
+  call verhogen
+
+  ; produce_here = (produce_here + 8) % buffer_size
+  mov rax, [produce_here] ; get value of produce_here
+  add rax, 8              ; increase by 8
+  xor rdx, rdx            ; zero rdx in preparation for 64-bit div
+  div qword [buffer_size] ; divide rax (produce_here) by the buffer's size
+  mov [produce_here], rdx ; set produce_here equal to the remainder
+
+  jmp producer_start
+finish_producer:
+  pop rdi
+  ret
