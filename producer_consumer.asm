@@ -1,9 +1,11 @@
 global init
 global producer
+global consumer
 
 extern malloc
 
 extern produce
+extern consume
 extern proberen
 extern verhogen
 
@@ -104,5 +106,44 @@ producer_start:
 
   jmp producer_start
 finish_producer:
+  pop rdi
+  ret
+
+;-------------------------------------------------------------------------------
+; consumer -- procedure to be executed by the consumer thread
+;  CLOBBERED: RAX, RCX, RDX
+;             All other registers preserved
+consumer:
+  push rdi
+consumer_start:
+  ; P(consumer_sem)
+  mov edi, consumer_sem
+  call proberen
+
+  ; consumers_portion = buffer[consume_here]
+  mov rax, [buffer]            ; get pointer to the beginning of the buffer
+  add rax, [consume_here]      ; offset by consume_here
+  mov rcx, [rax]               ; get value of consumers_portion
+  mov [consumers_portion], rcx ; save it in a named variable
+
+  ; consume(consumers_portion)
+  mov rdi, [consumers_portion]
+  call consume
+  ; V(producer_sem)
+  mov edi, producer_sem
+  call verhogen
+
+  cmp rax, 0   ; check if 0 was returned
+  je finish_consumer ; if so, finish procedure
+
+  ; consume_here = (consume_here + 8) % buffer_size
+  mov rax, [consume_here] ; get value of consume_here
+  add rax, 8              ; increase by 8
+  xor rdx, rdx            ; zero rdx in preparation for 64-bit div
+  div qword [buffer_size] ; divide rax (consume_here + 8) by the buffer's size
+  mov [consume_here], rdx ; set consume_here equal to the remainder
+
+  jmp consumer_start
+finish_consumer:
   pop rdi
   ret
