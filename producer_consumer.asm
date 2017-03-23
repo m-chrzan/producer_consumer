@@ -126,14 +126,15 @@ consumer_start:
   mov rcx, [rax]               ; get value of consumers_portion
   mov [consumers_portion], rcx ; save it in a named variable
 
-  ; consume(consumers_portion)
-  mov rdi, [consumers_portion]
-  call consume
   ; V(producer_sem)
   mov edi, producer_sem
   call verhogen
 
-  cmp rax, 0   ; check if 0 was returned
+  ; consume(consumers_portion)
+  mov rdi, [consumers_portion]
+  call consume
+
+  cmp rax, 0         ; check if 0 was returned
   je finish_consumer ; if so, finish procedure
 
   ; consume_here = (consume_here + 8) % buffer_size
