@@ -53,9 +53,9 @@ init:
 
   mov [buffer], rax ; store pointer to allocated memory
 
+  xor rax, rax
 finish_init:
   pop rdi
-  xor rax, rax
   ret               ; return with success code 0
 
 too_big:
