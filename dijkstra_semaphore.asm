@@ -16,7 +16,7 @@ proberen:
   jle proberen         ; if not, spinlock
   mov eax, -1
   lock xadd [rdi], eax ; try decreasing the semaphore
-  cmp eax, 0           ; check if the semaphore was > 0
+  test eax, eax        ; check if the semaphore was > 0
   jle spin_lock        ; if not, spinlock, adding back the 1
   ret
 

@@ -35,7 +35,7 @@ init:
 
   cmp rdi, 0x7fffffff ; check if size > 2^31 - 1
   ja too_big          ; if it is, return with error code -1
-  cmp rdi, 0          ; check if size = 0
+  test rdi, rdi       ; check if size = 0
   je zero             ; if it is, return with error code -2
 
   mov [producer_sem], edi     ; the producer's semaphore starts at buffer size
@@ -135,7 +135,7 @@ consumer_start:
   mov rdi, [consumers_portion]
   call consume
 
-  cmp rax, 0         ; check if 0 was returned
+  test rax, rax      ; check if 0 was returned
   je finish_consumer ; if so, finish procedure
 
   ; consume_here = (consume_here + 8) % buffer_size
