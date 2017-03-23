@@ -55,6 +55,7 @@ init:
 
 finish_init:
   pop rdi
+  xor rax, rax
   ret               ; return with success code 0
 
 too_big:
