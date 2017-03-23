@@ -40,9 +40,9 @@ init:
 
   mov [producer_sem], edi     ; the producer's semaphore starts at buffer size
   mov dword [consumer_sem], 0 ; the consumer's semaphore starts at 0
-  mov dword [produce_here], 0 ; producer should start producing at the start of
+  mov qword [produce_here], 0 ; producer should start producing at the start of
                               ;   the buffer
-  mov dword [consume_here], 0 ; consumer should start consuming at the start of
+  mov qword [consume_here], 0 ; consumer should start consuming at the start of
                               ;   the buffer
   shl rdi, 3             ; rdi *= 8, which is the size of our portions
   mov [buffer_size], rdi ; remember the buffer's size
