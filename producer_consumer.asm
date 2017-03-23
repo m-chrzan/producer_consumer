@@ -38,18 +38,18 @@ init:
   cmp rdi, 0          ; check if size = 0
   je zero             ; if it is, return with error code -2
 
-  mov [producer_sem], edi      ; the producer's semaphore starts at buffer size
-  mov dword [consumer_sem], 0  ; the consumer's semaphore starts at 0
-  mov dword [produce_here], 0  ; producer should start producing at the start of
-                               ;   the buffer
-  mov dword [consume_here], 0  ; consumer should start consuming at the start of
-                               ;   the buffer
+  mov [producer_sem], edi     ; the producer's semaphore starts at buffer size
+  mov dword [consumer_sem], 0 ; the consumer's semaphore starts at 0
+  mov dword [produce_here], 0 ; producer should start producing at the start of
+                              ;   the buffer
+  mov dword [consume_here], 0 ; consumer should start consuming at the start of
+                              ;   the buffer
   shl rdi, 3             ; rdi *= 8, which is the size of our portions
   mov [buffer_size], rdi ; remember the buffer's size
 
-  call malloc      ; malloc(rdi * sizeof(int64_t))
-  test rax, rax    ; check if we got a NULL pointer
-  jz calloc_error  ; if so, return with error code -3
+  call malloc     ; malloc(rdi * sizeof(int64_t))
+  test rax, rax   ; check if we got a NULL pointer
+  jz calloc_error ; if so, return with error code -3
 
   mov [buffer], rax ; store pointer to allocated memory
 
