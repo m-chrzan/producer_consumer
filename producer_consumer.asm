@@ -53,10 +53,10 @@ init:
 
   mov [buffer], rax ; store pointer to allocated memory
 
-  xor rax, rax
+  xor rax, rax ; set return code to 0
 finish_init:
   pop rdi
-  ret               ; return with success code 0
+  ret
 
 too_big:
   mov rax, -1
