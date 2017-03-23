@@ -72,8 +72,8 @@ calloc_error:
 
 ;-------------------------------------------------------------------------------
 ; producer -- procedure to be executed by the producer thread
-;  CLOBBERED: RAX, RCX, RDX
-;             All other registers preserved
+; CLOBBERED: RAX, RCX, RDX
+;            All other registers preserved
 producer:
   push rdi
 producer_start:
@@ -112,8 +112,8 @@ finish_producer:
 
 ;-------------------------------------------------------------------------------
 ; consumer -- procedure to be executed by the consumer thread
-;  CLOBBERED: RAX, RCX, RDX
-;             All other registers preserved
+; CLOBBERED: RAX, RCX, RDX
+;            All other registers preserved
 consumer:
   push rdi
 consumer_start:
