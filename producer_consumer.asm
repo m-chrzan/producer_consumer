@@ -49,7 +49,7 @@ init:
 
   call malloc     ; malloc(rdi * sizeof(int64_t))
   test rax, rax   ; check if we got a NULL pointer
-  jz calloc_error ; if so, return with error code -3
+  jz malloc_error ; if so, return with error code -3
 
   mov [buffer], rax ; store pointer to allocated memory
 
@@ -66,7 +66,7 @@ zero:
   mov rax, -2
   jmp finish_init
 
-calloc_error:
+malloc_error:
   mov rax, -3
   jmp finish_init
 
