@@ -85,7 +85,7 @@ producer_start:
   je finish_producer                 ; if so, exit the procedure
 
   ; P(producer_sem)
-  mov edi, producer_sem
+  mov rdi, producer_sem
   call proberen
 
   ; buffer[produce_here] = producers_portion
@@ -95,7 +95,7 @@ producer_start:
   mov [rax], rcx               ; store value in buffer
 
   ; V(consumer_sem)
-  mov edi, consumer_sem
+  mov rdi, consumer_sem
   call verhogen
 
   ; produce_here = (produce_here + 8) % buffer_size
@@ -118,7 +118,7 @@ consumer:
   push rdi
 consumer_start:
   ; P(consumer_sem)
-  mov edi, consumer_sem
+  mov rdi, consumer_sem
   call proberen
 
   ; consumers_portion = buffer[consume_here]
@@ -128,7 +128,7 @@ consumer_start:
   mov [consumers_portion], rcx ; save it in a named variable
 
   ; V(producer_sem)
-  mov edi, producer_sem
+  mov rdi, producer_sem
   call verhogen
 
   ; consume(consumers_portion)
