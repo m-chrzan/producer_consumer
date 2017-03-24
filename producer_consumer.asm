@@ -47,7 +47,7 @@ init:
   shl rdi, 3             ; rdi *= 8, which is the size of our portions
   mov [buffer_size], rdi ; remember the buffer's size
 
-  call malloc     ; malloc(rdi * sizeof(int64_t))
+  call malloc     ; malloc(size * sizeof(int64_t))
   test rax, rax   ; check if we got a NULL pointer
   jz malloc_error ; if so, return with error code -3
 
@@ -77,12 +77,12 @@ malloc_error:
 producer:
   push rdi
 producer_start:
-  ; producer(&producers_portion)
+  ; produce(&producers_portion)
   mov rdi, producers_portion
   call produce
 
-  cmp rax, 0                         ; check if 0 was returned
-  je finish_producer                 ; if so, exit the procedure
+  cmp rax, 0         ; check if 0 was returned
+  je finish_producer ; if so, exit the procedure
 
   ; P(producer_sem)
   mov rdi, producer_sem
